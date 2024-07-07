@@ -1,8 +1,8 @@
-/* NOTE: Contains base as well as custom classes(derived or not) that we will be using in pages and components */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* NOTE: Contains custom classes(above @layer utilities) that extends tailwind as well as custom aggregate classes(inside @layer utilities) */
 
 * {
   margin: 0;
@@ -44,6 +44,8 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #7878a3;
 }
+
+	/* --tw-bg-opacity: 1;; */
 
 @layer utilities {
   .input-class {
@@ -359,10 +361,6 @@
 
   .footer_image {
     @apply relative size-5 max-xl:w-full max-xl:flex max-xl:justify-center max-xl:items-center;
-  }
-
-  .footer_image-mobile {
-    @apply relative size-5;
   }
 
   /* Sidebar */
