@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+// NOTE: These are custom styles and classes that can be used inside all pages and components
+
 const config = {
   darkMode: ["class"],
   content: [

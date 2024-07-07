@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+// NOTE: COntains types that we will be using in the project
+
 declare type SearchParamProps = {
   params: { [key: string]: string };
   searchParams: { [key: string]: string | string[] | undefined };

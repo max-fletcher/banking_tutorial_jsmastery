@@ -3,6 +3,8 @@ import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 
+// NOTE: Contains helper functions that we will be using throughout the application
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

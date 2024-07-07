@@ -1,3 +1,5 @@
+/* NOTE: Contains base as well as custom classes(derived or not) that we will be using in pages and components */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -1,3 +1,5 @@
+// NOTE: Contains links for sidebar and other useful arrays or objects we will be using in the application
+
 export const sidebarLinks = [
   {
     imgURL: "/icons/home.svg",
