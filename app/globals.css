@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* NOTE: Contains custom classes(above @layer utilities) that extends tailwind as well as custom aggregate classes(inside @layer utilities) */
+/* NOTE: Contains custom classes(above @layer utilities) as well as custom aggregate classes that extends tailwind(inside @layer utilities) */
 
 * {
   margin: 0;
