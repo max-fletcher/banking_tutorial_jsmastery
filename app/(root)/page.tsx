@@ -1,4 +1,5 @@
 import HeaderBox from "@/HeaderBox"
+import RightSidebar from "@/RightSidebar"
 import TotalBalanceBox from "@/TotalBalanceBox"
 
 const Home = () => {
@@ -21,7 +22,15 @@ const Home = () => {
             totalCurrentBalance={1250.35}
           />
         </header>
+
+        RECENT TRANSACTIONS
       </div>
+
+      <RightSidebar 
+        user={loggedIn} 
+        transactions={[]}
+        banks={[]}
+      />
     </section>
   )
 }
