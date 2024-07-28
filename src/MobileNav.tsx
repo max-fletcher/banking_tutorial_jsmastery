@@ -48,7 +48,7 @@ const MobileNav = () => {
                         key={item.label}
                         href={item.route}
                         className={cn('mobilenav-sheet_close w-full', { 'bg-bank-gradient' : isActive } )} // A util function that merges classes. Uses twMerge under the hood.
-                        >
+                      >
                           <Image 
                             width={20}
                             height={20}
@@ -59,7 +59,7 @@ const MobileNav = () => {
                           <p className={cn("text-16 font-semibold text-black-2", { "text-white": isActive }) }>
                             {item.label}
                           </p>
-                        </Link>
+                      </Link>
                     </SheetClose>
                   )
                 })}

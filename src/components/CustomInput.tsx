@@ -8,7 +8,7 @@ import { authFormSchema } from "@/../lib/schema"
 interface CustomInput {
   control: Control<z.infer<typeof authFormSchema>>,
   // NOTE: "email" | "password" would work, but we will need to edit it on adding new fields. Hence, we are taking an inference of what this might be from authFormSchema
-  name: FieldPath<z.infer<typeof authFormSchema>>, 
+  name: FieldPath<z.infer<typeof authFormSchema>>,
   label: string,
   placeholder: string,
   type: string,
@@ -24,12 +24,12 @@ const CustomInput = ({control, name, label, placeholder, type}: CustomInput) => 
           <FormLabel className="form-label">
             {label}
           </FormLabel>
-          <div className="flex w-full fkex-col">
+          <div className="flex w-full flex-col">
             <FormControl>
               <Input 
                 placeholder={placeholder}
                 className="input-class"
-                type={type === 'password' ? 'password' : 'text'}
+                type={type}
                 {...field} 
               />
             </FormControl>
