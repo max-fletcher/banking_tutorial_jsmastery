@@ -1,9 +1,10 @@
 import HeaderBox from "@/HeaderBox"
 import RightSidebar from "@/RightSidebar"
 import TotalBalanceBox from "@/TotalBalanceBox"
+import { getLoggedInUser } from "../../lib/actions/user.actions";
 
-const Home = () => {
-  const loggedIn = { firstName: "Max", lastName: 'Fletcher', email: 'fletcher@mail.com' }
+const Home = async () => {
+  const loggedIn = await getLoggedInUser(); //NOTE: Calling this here since calling it inside AuthForm(i.e a client component) is not possible
 
   return (
     <section className="home">
@@ -12,7 +13,7 @@ const Home = () => {
           <HeaderBox 
             type="greeting" 
             title="Welcome" 
-            user={loggedIn?.firstName || "Guest"} 
+            user={loggedIn?.name || "Guest"} 
             subtext="Access and manage your account and transactions efficientely."
           />
 
