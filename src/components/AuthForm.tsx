@@ -10,11 +10,11 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
 } from "@/components/ui/form"
-import CustomInput from "./components/CustomInput"
+import CustomInput from "./CustomInput"
 import { authFormSchema } from "@/../lib/schema"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { signIn, signUp } from "../lib/actions/user.actions"
+import { signIn, signUp } from "../../lib/actions/user.actions"
 
 const AuthForm = ({ type } : {type: string} ) => {
   const router = useRouter()

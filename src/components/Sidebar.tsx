@@ -2,9 +2,10 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { sidebarLinks } from "../constants"
 import { usePathname } from "next/navigation"
-import { cn } from "../lib/utils"
+import { sidebarLinks } from "../../constants"
+import { cn } from "../../lib/utils"
+import Footer from "./Footer"
 
 const Sidebar = ({ user }: SiderbarProps) => {
   const pathname = usePathname()
@@ -37,7 +38,7 @@ const Sidebar = ({ user }: SiderbarProps) => {
                   <Image 
                     fill
                     src={item.imgURL}
-                    alt={item.label} 
+                    alt={item.label}
                     className={cn({'brightness-[3] invert-0' : isActive})} // A util function that merges classes. Uses twMerge under the hood.
                   />
                 </div>
@@ -49,7 +50,7 @@ const Sidebar = ({ user }: SiderbarProps) => {
         })}
         USER
       </nav>
-      FOOTER
+      <Footer user={user} type="mobile" />
     </section>
   )
 }

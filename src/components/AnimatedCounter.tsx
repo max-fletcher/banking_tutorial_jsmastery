@@ -1,7 +1,6 @@
 // Chart JS only works for client components so we sre using this here
 "use client"
 import CountUp from "react-countup"
-import { formatAmount } from "../lib/utils"
 
 const AnimatedCounter = ({amount}: {amount: number}) => {
   return (

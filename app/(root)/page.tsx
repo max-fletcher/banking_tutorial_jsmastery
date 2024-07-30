@@ -1,7 +1,7 @@
-import HeaderBox from "@/HeaderBox"
-import RightSidebar from "@/RightSidebar"
-import TotalBalanceBox from "@/TotalBalanceBox"
+import HeaderBox from "@/components/HeaderBox";
 import { getLoggedInUser } from "../../lib/actions/user.actions";
+import TotalBalanceBox from "@/components/TotalBalanceBox";
+import RightSidebar from "@/components/RightSidebar";
 
 const Home = async () => {
   const loggedIn = await getLoggedInUser(); //NOTE: Calling this here since calling it inside AuthForm(i.e a client component) is not possible

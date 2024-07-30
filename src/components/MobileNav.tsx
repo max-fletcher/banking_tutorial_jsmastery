@@ -8,11 +8,12 @@ import {
 } from "@/components/ui/sheet"
 import Image from "next/image"
 import Link from "next/link"
-import { sidebarLinks } from "../constants"
+import { sidebarLinks } from "../../constants"
 import { usePathname } from "next/navigation"
-import { cn } from "../lib/utils"
+import { cn } from "../../lib/utils"
+import Footer from "./Footer"
 
-const MobileNav = () => {
+const MobileNav = ({ user }: SiderbarProps) => {
 
   const pathname = usePathname()
 
@@ -68,7 +69,7 @@ const MobileNav = () => {
               </nav>
             </SheetClose>
 
-            FOOTER
+            <Footer user={user} type="mobile" />
           </div>
         </SheetContent>
       </Sheet>
