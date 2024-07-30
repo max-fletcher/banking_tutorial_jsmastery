@@ -6,9 +6,12 @@ import { createAdminClient, createSessionClient } from "../appwrite";
 import { ID } from "node-appwrite";
 import { parseStringify } from "../utils";
 
-export const signIn = async (userData: LoginUser) => {
+export const signIn = async ({email, password}: signInProps) => { // Directly destructuring the varaibles that we get as params
   try {
     // NOTE: in server actions, we do Mutations|Database Operation|Fetch Request
+    const { account } = await createAdminClient();
+    const response = await account.createEmailPasswordSession(email, password)
+    return parseStringify(response)
   } catch (error) {
     console.error('Error', error);
   }
@@ -49,7 +52,10 @@ export const signUp = async (userData: SignUpParams) => {
 export async function getLoggedInUser() {
   try {
     const { account } = await createSessionClient();
-    return await account.get();
+    const user = await account.get();
+
+    // NOTE: The reason we are using this "parseStringify" function is because in Next JS, we can't pass large objects via server actions so we are stringifying it first
+    return parseStringify(user)
   } catch (error) {
     return null;
   }
