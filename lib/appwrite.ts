@@ -11,6 +11,7 @@ export async function createSessionClient() {
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
+  // "appwrite-session" can be replaced with another name, but then we have to use the same cookie/session name across the entire app where this cookie is used
   const session = cookies().get("appwrite-session");
   if (!session || !session.value) {
     throw new Error("No session");
