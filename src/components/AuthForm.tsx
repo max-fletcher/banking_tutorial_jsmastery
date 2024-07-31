@@ -47,9 +47,9 @@ const AuthForm = ({ type } : {type: string} ) => {
             email: data.email,
             password: data.password,
           })
+
           if(response !== null) router.push('/') // Navigate to homepage if logged in
         }
-        console.log(data)
       } catch (error) {
         console.log(error)
       }

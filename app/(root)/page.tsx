@@ -5,6 +5,7 @@ import RightSidebar from "@/components/RightSidebar";
 
 const Home = async () => {
   const loggedIn = await getLoggedInUser(); //NOTE: Calling this here since calling it inside AuthForm(i.e a client component) is not possible
+  
 
   return (
     <section className="home">

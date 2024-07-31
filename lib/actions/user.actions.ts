@@ -10,7 +10,9 @@ export const signIn = async ({email, password}: signInProps) => { // Directly de
   try {
     // NOTE: in server actions, we do Mutations|Database Operation|Fetch Request
     const { account } = await createAdminClient();
+    console.log('account', account);
     const response = await account.createEmailPasswordSession(email, password)
+    console.log('sign in response', response);
     return parseStringify(response)
   } catch (error) {
     console.error('Error', error);
@@ -23,7 +25,6 @@ export const signUp = async (userData: SignUpParams) => {
   try {
     // NOTE: in server actions, we do Mutations|Database Operation|Fetch Request
     const { account } = await createAdminClient();
-
     const newUserAccount = await account.create(
       ID.unique(),
       email,
@@ -46,8 +47,6 @@ export const signUp = async (userData: SignUpParams) => {
     console.error('Error', error);
   }
 }
-
-// ... your initilization functions
 
 export async function getLoggedInUser() {
   try {
