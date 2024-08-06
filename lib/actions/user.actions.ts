@@ -9,6 +9,13 @@ import { CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestPr
 import { plaidClient } from "../plaid";
 import { revalidatePath } from "next/cache";
 
+// NOTE Fetch env variables instead of using say process.env.APPWRITE_DATABASE_ID everytime
+const {
+  APPWRITE_DATABASE_ID: DATABASE_ID, // We are renaming the env variable here
+  APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID, // We are renaming the env variable here
+  APPWRITE_BANK_COLLECTION_ID: BANK_COLLECTION_ID, // We are renaming the env variable here
+} = process.env
+
 export const signIn = async ({email, password}: signInProps) => { // Directly destructuring the varaibles that we get as params
   try {
     // NOTE: in server actions, we do Mutations|Database Operation|Fetch Request
@@ -90,6 +97,24 @@ export const createLinkToken = async (user: User) => { // Calls and requests a t
     return parseStringify({ linkToken: response.data.link_token })
   } catch (error) {
     console.log(error);
+    
+  }
+}
+
+export const createBankAccount = async ({ userId, bankId, accountId, accessToken, fundingSourceUrl, shareableId }: createBankAccountProps) => {
+  try {
+    const { database } = await createAdminClient() // establish client connection with appwrite DB
+    const bankAccount = await database.createDocument( // Storing data to the BANK_COLLECTION table in appwrite
+      DATABASE_ID!, // 1st param - ID of the database where we are storing the data
+      BANK_COLLECTION_ID!, // 2nd param - ID of the collection where we are storing the data
+      ID.unique(), // 3rd param - generate a unique ID to use as primary key,
+      {            // 4th param - Object containing all the data we are storing to each column in the correct sequence
+        userId, bankId, accountId, accessToken, fundingSourceUrl, shareableId 
+      }
+    )
+
+    return parseStringify(bankAccount)
+  } catch (error) {
     
   }
 }
