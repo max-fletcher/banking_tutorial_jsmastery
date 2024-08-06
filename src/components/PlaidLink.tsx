@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Button } from "./ui/button"
 import { PlaidLinkOnSuccess, PlaidLinkOptions, usePlaidLink } from 'react-plaid-link'
 import { useRouter } from "next/navigation"
+import { createLinkToken, exchangePublicToken } from "../../lib/actions/user.actions"
 
 const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
   const router = useRouter()
@@ -12,20 +13,20 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
   // NOTE: Never make the function (i.e 1st dependency) in useEffect async. You can make any inner function async but not the outer one.
   useEffect(() => {
     const getLinkToken = async () => {
-      // const data = await createLinkToken(user)
-      // setToken(data?.linkToken)
+      const data = await createLinkToken(user)
+      setToken(data?.linkToken)
     }
 
-    getLinkToken()
-  }, []);
+    getLinkToken() // calling the function after creating it
+  }, [user]);
 
   // NOTE: Using a useCallback since we don't want to recall this on every re-render. Note the type def here as well.
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
     async (public_token: string) => {
-      // await exchangePublicToken({
-      //   publicToken: public_token,
-      //   user
-      // })
+      await exchangePublicToken({
+        publicToken: public_token,
+        user
+      })
 
       router.push('/')
     }, [user]
@@ -41,7 +42,11 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
   return (
     <>
       {variant === 'primary' ? (
-          <Button className="plaidlink-primary">
+          <Button
+            onClick={() => open()} // Not using a callback causes this to throw a typescript error
+            disabled={!ready} // Disabled if not ready
+            className="plaidlink-primary"
+          >
             Connect Bank
           </Button> 
         ) 
