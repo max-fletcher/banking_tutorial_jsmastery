@@ -39,7 +39,19 @@ const AuthForm = ({ type } : {type: string} ) => {
       try {
         // Sign up with AppWrite and create plaid token
         if(type === "sign-up"){
-          const newUser = await signUp(data)
+          const userData = { // Create a new object in order to mitigate typescript errors in signUp inside user.actions.ts(i.e createDwollaCustomer function inside signUp)
+            firstName: data.firstName!,
+            lastName: data.lastName!,
+            address1: data.address1!,
+            city: data.city!,
+            state: data.state!,
+            postalCode: data.postalCode!,
+            dateOfBirth: data.dateOfBirth!,
+            ssn: data.ssn!,
+            email: data.email,
+            password: data.password,
+          }
+          const newUser = await signUp(userData)
           setUser(newUser)
         }
         // NOTE: else condition here throws type error in response(An expression of type 'void' cannot be tested for truthiness) so we are using an if statement.

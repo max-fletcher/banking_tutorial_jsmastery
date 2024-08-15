@@ -4,10 +4,11 @@
 import { cookies } from "next/headers";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { ID } from "node-appwrite";
-import { encryptId, parseStringify } from "../utils";
+import { encryptId, extractCustomerIdFromUrl, parseStringify } from "../utils";
 import { CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestProcessorEnum, Products } from "plaid";
 import { plaidClient } from "../plaid";
 import { revalidatePath } from "next/cache";
+import { addFundingSource, createDwollaCustomer } from "./dwolla.actions";
 
 // NOTE Fetch env variables instead of using say process.env.APPWRITE_DATABASE_ID everytime
 const {
@@ -32,16 +33,38 @@ export const signIn = async ({email, password}: signInProps) => { // Directly de
 export const signUp = async (userData: SignUpParams) => {
   const { email, password, firstName, lastName } = userData
 
+  let newUserAccount;
+
   try {
     // NOTE: in server actions, we do Mutations|Database Operation|Fetch Request
-    const { account } = await createAdminClient();
-    const newUserAccount = await account.create(
+    const { account, database } = await createAdminClient();
+    newUserAccount = await account.create(
       ID.unique(),
       email,
       password,
       `${firstName} ${lastName}`
-    );
-    const session = await account.createEmailPasswordSession(email, password);
+    )
+
+    if(!newUserAccount) throw new Error('Error creating user')
+
+    const dwollaCustomerUrl = await createDwollaCustomer({...userData, type: 'personal'})
+
+    if(!dwollaCustomerUrl) throw new Error('Error creating Dwolla customer ')
+
+    const dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl)
+
+    console.log('before creating new user', userData, newUserAccount.$id, dwollaCustomerId, dwollaCustomerUrl);
+
+    const newUser = await database.createDocument(
+      DATABASE_ID!, // 1st param - ID of the database where we are storing the data
+      USER_COLLECTION_ID!, // 2nd param - ID of the collection/table where we are storing the data
+      ID.unique(), // 3rd param - generate a unique ID to use as primary key,
+      {            // 4th param - Object containing all the data we are storing to each column in the correct sequence
+        ...userData, userId: newUserAccount.$id, dwollaCustomerId, dwollaCustomerUrl // Some of the keys here are not renamed. May need to do that later.
+      }
+    )
+
+    const session = await account.createEmailPasswordSession(email, password)
 
     // the "appwrite-session" can be replaced with any other name, but it has to be the same as the name used in appwrite.ts
     cookies().set("appwrite-session", session.secret, {
@@ -49,34 +72,34 @@ export const signUp = async (userData: SignUpParams) => {
       httpOnly: true,
       sameSite: "strict",
       secure: true,
-    });
+    })
 
     // NOTE: The reason we are using this "parseStringify" function is because in Next JS, we can't pass large objects via server actions so we are stringifying it first
-    return parseStringify(newUserAccount)
+    return parseStringify(newUser)
   } catch (error) {
-    console.error('Error', error);
+    console.error('Error', error)
   }
 }
 
 export async function getLoggedInUser() { // This needs to be a normal function for some reason
   try {
-    const { account } = await createSessionClient();
-    const user = await account.get();
+    const { account } = await createSessionClient()
+    const user = await account.get()
 
     // NOTE: The reason we are using this "parseStringify" function is because in Next JS, we can't pass large objects via server actions so we are stringifying it first
     return parseStringify(user)
   } catch (error) {
-    return null;
+    return null
   }
 }
 
 export const logoutAccount = async () => {
   try {
     const { account } = await createSessionClient();
-    cookies().delete('appwrite-session');
+    cookies().delete('appwrite-session')
     await account.deleteSession('current') // To close current session client
   } catch (error) {
-    return null;
+    return null
   }
 }
 
@@ -96,7 +119,7 @@ export const createLinkToken = async (user: User) => { // Calls and requests a t
 
     return parseStringify({ linkToken: response.data.link_token })
   } catch (error) {
-    console.log(error);
+    console.log(error)
     
   }
 }
@@ -104,9 +127,9 @@ export const createLinkToken = async (user: User) => { // Calls and requests a t
 export const createBankAccount = async ({ userId, bankId, accountId, accessToken, fundingSourceUrl, shareableId }: createBankAccountProps) => {
   try {
     const { database } = await createAdminClient() // establish client connection with appwrite DB
-    const bankAccount = await database.createDocument( // Storing data to the BANK_COLLECTION table in appwrite
+    const bankAccount = await database.createDocument( // Storing data to the BANK_COLLECTION collection/table in appwrite
       DATABASE_ID!, // 1st param - ID of the database where we are storing the data
-      BANK_COLLECTION_ID!, // 2nd param - ID of the collection where we are storing the data
+      BANK_COLLECTION_ID!, // 2nd param - ID of the collection/table where we are storing the data
       ID.unique(), // 3rd param - generate a unique ID to use as primary key,
       {            // 4th param - Object containing all the data we are storing to each column in the correct sequence
         userId, bankId, accountId, accessToken, fundingSourceUrl, shareableId 
