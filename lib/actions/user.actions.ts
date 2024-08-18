@@ -17,14 +17,41 @@ const {
   APPWRITE_BANK_COLLECTION_ID: BANK_COLLECTION_ID, // We are renaming the env variable here
 } = process.env
 
+export const getUserInfo = async ({userId}: getUserInfoProps) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const user = await database.listDocuments(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      [Query.equal('userId', [userId])] // query a user that has 'userId' equal to 'userId'. Works like a 'where' statement
+    )
+
+    return parseStringify(user.documents[0]);
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const signIn = async ({email, password}: signInProps) => { // Directly destructuring the varaibles that we get as params
   try {
     // NOTE: in server actions, we do Mutations|Database Operation|Fetch Request
     const { account } = await createAdminClient();
     console.log('account', account);
-    const response = await account.createEmailPasswordSession(email, password)
-    console.log('sign in response', response);
-    return parseStringify(response)
+
+    const session = await account.createEmailPasswordSession(email, password)
+
+    // the "appwrite-session" can be replaced with any other name, but it has to be the same as the name used in appwrite.ts
+    cookies().set("appwrite-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    })
+
+    const user = await getUserInfo({userId: session.userId})
+    console.log('sign in user', user);
+    return parseStringify(user)
   } catch (error) {
     console.error('Error', error);
   }
@@ -84,7 +111,9 @@ export const signUp = async ({password , ...userData}: SignUpParams) => {
 export async function getLoggedInUser() { // This needs to be a normal function for some reason
   try {
     const { account } = await createSessionClient()
-    const user = await account.get()
+    const result = await account.get()
+
+    const user = await getUserInfo({ userId: result.$id })
 
     // NOTE: The reason we are using this "parseStringify" function is because in Next JS, we can't pass large objects via server actions so we are stringifying it first
     return parseStringify(user)
