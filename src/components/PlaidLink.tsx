@@ -5,6 +5,7 @@ import { Button } from "./ui/button"
 import { PlaidLinkOnSuccess, PlaidLinkOptions, usePlaidLink } from 'react-plaid-link'
 import { useRouter } from "next/navigation"
 import { createLinkToken, exchangePublicToken } from "../../lib/actions/user.actions"
+import Image from "next/image"
 
 const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
   const router = useRouter()
@@ -52,14 +53,36 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
         ) 
         : variant === 'ghost' ? 
           (
-            <Button>
-              Connect Bank
+            // NOTE: Button with ghost button style
+            <Button
+              onClick={() => open()} // Not using a callback causes this to throw a typescript error
+              variant="ghost"
+              className="plaidlink-ghost"
+            >
+              <Image 
+                src="/icons/connect-bank.svg"
+                alt="connect bank"
+                width={24}
+                height={24} 
+              />
+            {/* NOTE: this p tag will be hidden unless screen size will be xl as  signified by the "hidden xl:block" classes */}
+            <p className="hidden xl:block text-[16px] font-semibold text-black-2">Connect Bank</p>
             </Button> 
           )
           :
-          <Button>
-            Connect Bank
-          </Button> 
+          // NOTE: Button with default button style
+          <Button
+            onClick={() => open()} // Not using a callback causes this to throw a typescript error
+            className="plaidlink-default"
+          >
+            <Image 
+              src="/icons/connect-bank.svg"
+              alt="connect bank"
+              width={24}
+              height={24} 
+            />
+            <p className="text-[16px] font-semibold text-black-2">Connect Bank</p>
+          </Button>
       }
     </>
   )
