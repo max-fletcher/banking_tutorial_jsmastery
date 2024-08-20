@@ -24,7 +24,7 @@ const RecentTransactions = ({accounts, transactions, appwriteItemId, page}: Rece
             { accounts.map((account: Account) => {
               return(
                 <TabsTrigger key={account.id} value={account.appwriteItemId}>
-                  <BankTabItem key={account.id} account={account} appwriteItemId={account.appwriteItemId} />
+                  <BankTabItem key={account.id} account={account} appwriteItemId={appwriteItemId} />
                 </TabsTrigger>
               )
             }) }

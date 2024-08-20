@@ -65,24 +65,26 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
                 width={24}
                 height={24} 
               />
-            {/* NOTE: this p tag will be hidden unless screen size will be xl as  signified by the "hidden xl:block" classes */}
-            <p className="hidden xl:block text-[16px] font-semibold text-black-2">Connect Bank</p>
+              {/* NOTE: this p tag will be hidden unless screen size will be xl as  signified by the "hidden xl:block" classes */}
+              <p className="hidden xl:block text-[16px] font-semibold text-black-2">Connect Bank</p>
             </Button> 
           )
           :
-          // NOTE: Button with default button style
-          <Button
-            onClick={() => open()} // Not using a callback causes this to throw a typescript error
-            className="plaidlink-default"
-          >
-            <Image 
-              src="/icons/connect-bank.svg"
-              alt="connect bank"
-              width={24}
-              height={24} 
-            />
-            <p className="text-[16px] font-semibold text-black-2">Connect Bank</p>
-          </Button>
+          (
+            // NOTE: Button with default button style
+            <Button
+              onClick={() => open()} // Not using a callback causes this to throw a typescript error
+              className="plaidlink-default"
+            >
+              <Image 
+                src="/icons/connect-bank.svg"
+                alt="connect bank"
+                width={24}
+                height={24} 
+              />
+              <p className="text-[16px] font-semibold text-black-2">Connect Bank</p>
+            </Button>
+          )
       }
     </>
   )
