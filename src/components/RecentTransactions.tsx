@@ -3,8 +3,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BankTabItem } from "./BankTabItem"
 import BankInfo from "./BankInfo"
 import TransactionsTable from "./TransactionsTable"
+import { Pagination } from "./Pagination"
 
 const RecentTransactions = ({accounts, transactions, appwriteItemId, page}: RecentTransactionsProps) => {
+  const rowsPerPage = 10 // Default rowsPerPage
+  const totalPages = Math.ceil(transactions.length/rowsPerPage) // Dividing all by rowsPerPage to get number of pages
+
+  const indexOfLastTransaction = page * rowsPerPage // index of last item in the page
+  const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage // index of first item in the page
+
+  // NOTE: Slice and get the transactions to show in paginated component. Uses slice so I think this can be improved
+  const currentTransactions = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction)
+
   return (
     <>
       <section className="recent-transactions">
@@ -43,7 +53,12 @@ const RecentTransactions = ({accounts, transactions, appwriteItemId, page}: Rece
                     type="full" 
                   />
 
-                  <TransactionsTable transactions={transactions} />
+                  <TransactionsTable transactions={currentTransactions} />
+                  {totalPages > 1 && (
+                    <div className="my-4 w-full">
+                      <Pagination totalPages={totalPages} page={page} />
+                    </div>
+                  )}
                 </TabsContent>
               )
             }) }

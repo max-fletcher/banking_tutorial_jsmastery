@@ -3,10 +3,11 @@ import { getLoggedInUser } from "@/../lib/actions/user.actions";
 import { getAccount, getAccounts } from "@/../lib/actions/bank.actions";
 import { formatAmount } from "@/../lib/utils";
 import TransactionsTable from "@/components/TransactionsTable";
+import { Pagination } from "@/components/Pagination";
 
 const TransactionHistory = async ({searchParams: {id, page}}: SearchParamProps) => {
-
   const currentPage = Number(page as string) || 1;
+
   const loggedIn = await getLoggedInUser(); //NOTE: Calling this here since calling it inside AuthForm(i.e a client component) is not possible
   const accounts = await getAccounts({userId: loggedIn.$id}); // passing loggedIn user's '$id' renamed as 'userId'
 
@@ -17,6 +18,16 @@ const TransactionHistory = async ({searchParams: {id, page}}: SearchParamProps) 
   // "appwriteItemId" corresponds to the first account belonging to the user.
   const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId
   const account = await getAccount({appwriteItemId})
+
+  // NOTE: The lines below is for pagination.
+  const rowsPerPage = 10 // Default rowsPerPage
+  const totalPages = Math.ceil(account.transactions.length/rowsPerPage) // Dividing all by rowsPerPage to get number of pages
+
+  const indexOfLastTransaction = currentPage * rowsPerPage // index of last item in the page
+  const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage // index of first item in the page
+
+  // NOTE: Slice and get the transactions to show in paginated component. Uses slice so I think this can be improved
+  const currentTransactions = account.transactions.slice(indexOfFirstTransaction, indexOfLastTransaction)
 
   return (
     <div className="transactions">
@@ -43,7 +54,12 @@ const TransactionHistory = async ({searchParams: {id, page}}: SearchParamProps) 
         </div>
 
         <section className="flex w-full flex-col gap-6">
-          <TransactionsTable transactions={account?.transactions} />
+          <TransactionsTable transactions={currentTransactions} />
+          {totalPages > 1 && (
+            <div className="my-4 w-full">
+              <Pagination totalPages={totalPages} page={currentPage} />
+            </div>
+          )}
         </section>
       </div>
     </div>
