@@ -31,7 +31,7 @@ const formSchema = z.object({
   name: z.string().min(4, "Transfer note is too short"),
   amount: z.string().min(4, "Amount is too short"),
   senderBank: z.string().min(4, "Please select a valid bank account"),
-  sharableId: z.string().min(8, "Please select a valid sharable Id"),
+  shareableId: z.string().min(8, "Please select a valid sharable Id"),
 });
 
 const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
@@ -45,15 +45,18 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
       email: "",
       amount: "",
       senderBank: "",
-      sharableId: "",
+      shareableId: "",
     },
   });
+
+  // console.log('value', form.getValues('amount'));
+  // console.log('errors', form.formState.errors);
 
   const submit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
 
     try {
-      const receiverAccountId = decryptId(data.sharableId);
+      const receiverAccountId = decryptId(data.shareableId);
       const receiverBank = await getBankByAccountId({
         accountId: receiverAccountId,
       });
@@ -190,7 +193,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
 
         <FormField
           control={form.control}
-          name="sharableId"
+          name="shareableId"
           render={({ field }) => (
             <FormItem className="border-t border-gray-200">
               <div className="payment-transfer_form-item pb-5 pt-6">

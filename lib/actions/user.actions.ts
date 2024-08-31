@@ -265,6 +265,7 @@ export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps)
       [Query.equal('accountId', [accountId])]
     )
 
+    // NOTE: If bank doesn't exist, return null
     if(bank.total !== 1) return null;
 
     return parseStringify(bank.documents[0]);
